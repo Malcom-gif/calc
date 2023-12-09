@@ -1,0 +1,9 @@
+service: () -> {
+    addArtist: (record {Email:text; Genre:text; FullName:text; National_ID:text; Nationality:text; Phonenumber:text; Pseudoname:text; Date_of_Birth:text}) -> (record {id:text; Email:text; Genre:text; FullName:text; National_ID:text; Nationality:text; Phonenumber:text; Pseudoname:text; Date_of_Birth:text});
+    addLogsheet: (record {createdAt:text; createdBy:text; Composer:text; NumberOfPlays:int; SongTitle:text}) -> (record {id:text; createdAt:text; createdBy:text; Composer:text; NumberOfPlays:int; SongTitle:text});
+    addManager: (record {Email:text; Name:text; Phonenumber:text}) -> (record {id:text; Email:text; Name:text; Phonenumber:text});
+    addSong: (record {PlayCount:int; ArtistId:text; Composer:text; Title:text}) -> (record {id:text; PlayCount:int; ArtistId:text; Composer:text; Title:text});
+    addUser: (record {Email:text; Name:text; Phonenumber:text}) -> (record {id:text; Email:text; Name:text; Phonenumber:text});
+    getAllSongs: () -> (vec record {id:text; PlayCount:int; ArtistId:text; Composer:text; Title:text}) query;
+    getAllUsers: () -> (vec record {id:text; Email:text; Genre:text; FullName:text; National_ID:text; Nationality:text; Phonenumber:text; Pseudoname:text; Date_of_Birth:text}) query;
+}
