@@ -122,8 +122,57 @@ export default Canister({
   }),
   
   // matching Songs function
+// Uploading Logsheets
+  uploadLogsheets: update([Vec<LogsheetPayload>], text, (logsheetData) => {
+    try {
+      processLogsheets(logsheetData);
+      return 'Logsheets processed and stored successfully.';
+    } catch (error) {
+      console.error('Error processing logsheets:', error);
+      return 'Error processing logsheets.';
+    }
+  }),
 
-  
+  // Temporary function to process logsheets
+  processLogsheets: update([Vec<LogsheetPayload>], LogsheetPayload, (logsheetData) => {
+    logsheetData.forEach((payload) => {
+      let logsheet: Logsheet = {
+        id: uuidv4(),
+        createdAt: ic.time(),
+        createdBy: payload.createdBy,
+        SongTitle: payload.SongTitle,
+        NumberOfPlays: payload.NumberOfPlays,
+        Composer: payload.Composer,
+      };
+
+      logsheets.insert(logsheet.id, logsheet);
+      matchLogsheetsWithSongs(logsheet);
+    });
+  }),
+
+  // Match Logsheets with Songs
+  matchLogsheetsWithSongs: update([Logsheet], text, (logsheet) => {
+    const matchingSong = songs.values().find(
+      (song) => song.Title === logsheet.SongTitle && song.Composer === logsheet.Composer
+    );
+
+    if (matchingSong) {
+      matchingSong.NumberOfPlays += logsheet.NumberOfPlays;
+      // Update the song in the map
+      songs.insert(matchingSong.id, matchingSong);
+      return 'Matched logsheet with song successfully.';
+    } else {
+      console.error('No matching song found for logsheet:', logsheet);
+      return 'No matching song found for logsheet.';
+    }
+  }),
+
+  // View Dashboard
+  getArtistDashboard: query([ArtistId], Vec<Song>, (artistId) => {
+    const artistSongs = songs.values().filter((song) => song.ArtistId === artistId);
+    return artistSongs;
+  }),
+
 
 
 // Upload Logsheets
